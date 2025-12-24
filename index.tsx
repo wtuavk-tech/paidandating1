@@ -491,14 +491,14 @@ new Vue({
             <!-- 地址 - 颜色text-slate-800，2行显示 -->
             <vxe-column field="address" title="详细地址" min-width="180">
                 <template #default="{ row }">
-                   <span class="text-slate-800 text-[12px] leading-tight line-clamp-2" :title="row.address">{{ row.address }}</span>
+                   <span class="text-slate-800 text-[12px] leading-tight line-clamp-2 whitespace-normal break-words" :title="row.address">{{ row.address }}</span>
                 </template>
             </vxe-column>
 
             <!-- 详情 - 颜色text-slate-800，2行显示 -->
             <vxe-column field="details" title="详情" min-width="220">
                 <template #default="{ row }">
-                   <span class="text-slate-800 text-[14px] leading-tight line-clamp-2" :title="row.details">{{ row.details }}</span>
+                   <span class="text-slate-800 text-[14px] leading-tight line-clamp-2 whitespace-normal break-words" :title="row.details">{{ row.details }}</span>
                 </template>
             </vxe-column>
 
