@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>业务订单后台管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Vue 2 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    
+    <!-- Element UI -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.15.14/lib/theme-chalk/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/element-ui@2.15.14/lib/index.js"></script>
+    
+    <!-- VXE Table & Utils -->
+    <script src="https://cdn.jsdelivr.net/npm/xe-utils"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vxe-table@3.8.3/lib/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vxe-table@3.8.3/lib/index.umd.js"></script>
+
+    <style>
+      /* 全局字体设定 */
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        background-color: #e2e8f0; /* slate-200 */
+        margin: 0;
+        overflow: hidden;
+      }
+      
+      /* VXE Table 样式覆盖 - 满足用户定制需求 */
+      .vxe-table--render-default .vxe-table--border-line {
+        border-color: #cbd5e1 !important;
+      }
+      .vxe-table--render-default .vxe-body--column,
+      .vxe-table--render-default .vxe-footer--column, 
+      .vxe-table--render-default .vxe-header--column {
+        border-right: 1px solid #cbd5e1;
+        border-bottom: 1px solid #cbd5e1;
+        background-image: none !important;
+      }
+      /* 表头背景 */
+      .vxe-header--column {
+        background-color: #f8fafc !important; /* slate-50 */
+        color: #334155; /* slate-700 */
+        font-weight: 700;
+        font-size: 13px;
+      }
+      /* 斑马纹 - 浅蓝色 #eff6ff (blue-50) */
+      .vxe-table--render-default.stripe--normal .vxe-body--row.row--stripe {
+        background-color: #eff6ff !important;
+      }
+      .vxe-table--render-default.stripe--normal .vxe-body--row.row--stripe:hover {
+        background-color: #dbeafe !important; /* blue-100 hover */
+      }
+      /* Hover 效果 */
+      .vxe-body--row:hover {
+        background-color: #dbeafe !important; /* blue-100 */
+      }
+      
+      /* 滚动条美化 */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+
+      /* Element UI 样式微调 */
+      .el-input__inner {
+        height: 32px;
+        line-height: 32px;
+        font-size: 12px;
+        border-color: #e2e8f0;
+      }
+      .el-input__icon {
+        line-height: 32px;
+      }
+      .el-button--mini {
+        font-size: 11px;
+      }
+      
+      /* 自定义动画 - Marquee */
+      @keyframes marquee { 
+        0% { transform: translateX(100%); } 
+        100% { transform: translateX(-100%); } 
+      }
+      .animate-marquee {
+        animation: marquee 35s linear infinite;
+      }
+      .group:hover .animate-marquee {
+        animation-play-state: paused;
+      }
+
+      /* 自定义动画 - 悬浮跳动 */
+      @keyframes float-jump {
+        0%, 100% { transform: translateY(0) scale(0.9); }
+        50% { transform: translateY(-3px) scale(0.9); }
+      }
+      .animate-float-jump {
+        animation: float-jump 1.5s infinite ease-in-out;
+      }
+
+      /* 通用工具类 */
+      .font-mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      }
+      
+      /* 隐藏 VXE Table 默认的 header border */
+      .vxe-table--header-border-line {
+        border-bottom: 1px solid #cbd5e1 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
