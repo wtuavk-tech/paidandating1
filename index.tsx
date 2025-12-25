@@ -101,6 +101,9 @@ new Vue({
       loading: false,
       isExpanded: false, // 搜索栏展开状态
       
+      // 公告滚动样式
+      marqueeStyle: { transform: 'translateX(0)', transition: 'none' },
+
       // 分页
       page: {
         currentPage: 1,
@@ -157,6 +160,9 @@ new Vue({
   created() {
     this.loadData();
   },
+  mounted() {
+    this.startMarquee();
+  },
   methods: {
     loadData() {
       this.loading = true;
@@ -185,12 +191,48 @@ new Vue({
       const end = start + this.page.pageSize;
       this.displayData = this.tableData.slice(start, end);
     },
-    handlePageChange({ currentPage, pageSize }) {
-      this.page.currentPage = currentPage;
-      this.page.pageSize = pageSize;
+    handleSizeChange(val) {
+      this.page.pageSize = val;
+      this.page.currentPage = 1;
+      this.updateDisplayData();
+    },
+    handleCurrentChange(val) {
+      this.page.currentPage = val;
       this.updateDisplayData();
     },
     
+    // 公告滚动逻辑
+    startMarquee() {
+        const run = () => {
+            // 1. 缓慢向左滚动直到消失
+            this.marqueeStyle = {
+                transform: 'translateX(-100%)',
+                transition: 'transform 60s linear' // 减慢速度
+            };
+            
+            // 2. 滚动结束后复位
+            setTimeout(() => {
+                // 瞬间跳到右侧
+                this.marqueeStyle = {
+                    transform: 'translateX(100%)', // 移到容器右侧外
+                    transition: 'none'
+                };
+                
+                // 稍作延迟后缓慢滚回原位 (0)
+                setTimeout(() => {
+                    this.marqueeStyle = {
+                        transform: 'translateX(0)',
+                        transition: 'transform 60s linear'
+                    };
+                }, 100);
+                
+            }, 60000); // 60s 后执行复位逻辑
+        };
+
+        // 设置定时器：每1小时(3600000ms)执行一次
+        setInterval(run, 3600000);
+    },
+
     // 交互方法
     toggleExpand() {
       this.isExpanded = !this.isExpanded;
@@ -236,14 +278,14 @@ new Vue({
   template: `
     <div class="h-screen flex flex-col p-2 font-sans text-sm">
       
-      <!-- 1. Notification Bar (通知栏) -->
-      <div class="flex items-center gap-3 mb-2 px-2 py-1.5 bg-[#0f172a] rounded-lg shadow-sm overflow-hidden relative group shrink-0 h-[46px] border border-slate-800">
+      <!-- 1. Notification Bar (通知栏) - 样式优化：浅灰色底，深色文字，JS控制滚动 -->
+      <div class="flex items-center gap-3 mb-2 px-2 py-1.5 bg-slate-100 rounded-lg shadow-sm overflow-hidden relative group shrink-0 h-[46px] border border-slate-300">
         <div class="flex items-center justify-center gap-1.5 bg-[#ef4444] text-white px-3 h-[28px] rounded shrink-0 z-10 shadow-sm ml-1">
           <span class="text-[12px] font-bold whitespace-nowrap leading-none tracking-wide">主要公告</span>
           <i class="el-icon-bell text-white font-bold"></i>
         </div>
         <div class="flex-1 overflow-hidden relative h-full flex items-center">
-          <div class="whitespace-nowrap animate-marquee flex items-center gap-16 text-[12px] font-medium text-slate-200 cursor-default">
+          <div :style="marqueeStyle" class="whitespace-nowrap flex items-center gap-16 text-[12px] font-medium text-slate-700 cursor-default">
             <span class="flex items-center gap-2">
               <i class="el-icon-message-solid text-[#ef4444]"></i>
               <span>关于 2025 年度秋季职级晋升评审的通知：点击下方详情以阅读完整公告内容。请所有相关人员务必在截止日期前完成确认。</span>
@@ -258,7 +300,7 @@ new Vue({
             </span>
           </div>
         </div>
-        <div class="shrink-0 z-10 bg-[#1e293b] border border-slate-700/50 text-[#60a5fa] text-[11px] font-bold font-mono px-2.5 py-1 rounded select-none mr-1">
+        <div class="shrink-0 z-10 bg-white border border-slate-300 text-slate-500 text-[11px] font-bold font-mono px-2.5 py-1 rounded select-none mr-1">
           2025-11-19
         </div>
       </div>
@@ -436,14 +478,13 @@ new Vue({
             border
             stripe
             show-header-overflow
-            show-overflow
-            :row-config="{isHover: true, height: 48}"
+            :row-config="{isHover: true}"
             :data="displayData"
             :loading="loading"
             height="auto"
             class="flex-1"
             size="mini"
-            :scroll-y="{enabled: true}"
+            :scroll-y="{enabled: false}"
           >
             <!-- 手机号 -->
             <vxe-column field="mobile" title="手机号" width="105" fixed="left" align="center">
@@ -452,10 +493,10 @@ new Vue({
                 </template>
             </vxe-column>
 
-            <!-- 项目/质保期 - 居中对齐 -->
+            <!-- 项目/质保期 - 居中对齐，添加 whitespace-normal 确保换行 -->
             <vxe-column field="serviceItem" title="项目/质保期" width="120" align="center">
                 <template #default="{ row }">
-                   <div class="flex flex-col items-center">
+                   <div class="flex flex-col items-center whitespace-normal break-words">
                       <span class="font-bold text-gray-700 hover:text-blue-600 cursor-pointer text-[12px]">{{ row.serviceItem }}</span>
                       <span class="text-[10px] text-slate-500">{{ row.warranty }}</span>
                    </div>
@@ -480,25 +521,25 @@ new Vue({
                 </template>
             </vxe-column>
 
-            <!-- 地域 -->
+            <!-- 地域 - 添加 whitespace-normal -->
             <vxe-column field="region" title="地域" width="130">
                 <template #default="{ row }">
-                    <div class="truncate">{{ row.region }}</div>
+                    <div class="whitespace-normal break-words">{{ row.region }}</div>
                     <div class="text-[9px] text-blue-500"><span class="font-mono">{{ row.regionPeople }}</span>人</div>
                 </template>
             </vxe-column>
 
-            <!-- 地址 - 颜色text-slate-800，2行显示 -->
+            <!-- 地址 - 颜色text-slate-800，完全显示 -->
             <vxe-column field="address" title="详细地址" min-width="180">
                 <template #default="{ row }">
-                   <span class="text-slate-800 text-[12px] leading-tight line-clamp-2 whitespace-normal break-words" :title="row.address">{{ row.address }}</span>
+                   <span class="text-slate-800 text-[12px] leading-tight whitespace-normal break-words" :title="row.address">{{ row.address }}</span>
                 </template>
             </vxe-column>
 
-            <!-- 详情 - 颜色text-slate-800，2行显示 -->
+            <!-- 详情 - 颜色text-slate-800，完全显示 -->
             <vxe-column field="details" title="详情" min-width="220">
                 <template #default="{ row }">
-                   <span class="text-slate-800 text-[14px] leading-tight line-clamp-2 whitespace-normal break-words" :title="row.details">{{ row.details }}</span>
+                   <span class="text-slate-800 text-[14px] leading-tight whitespace-normal break-words" :title="row.details">{{ row.details }}</span>
                 </template>
             </vxe-column>
 
@@ -552,10 +593,10 @@ new Vue({
                 </template>
             </vxe-column>
 
-            <!-- 时间 -->
+            <!-- 时间 - 添加 whitespace-normal -->
             <vxe-column field="recordTime" title="录单/上门时间" width="140" align="center">
                 <template #default="{ row }">
-                    <div class="flex flex-col gap-0.5 text-[12px]">
+                    <div class="flex flex-col gap-0.5 text-[12px] whitespace-normal">
                         <div class="flex items-center justify-center gap-1 text-slate-400 font-mono">
                             <span class="w-3.5 h-3.5 rounded bg-blue-500 text-white flex items-center justify-center text-[9px] font-sans">录</span>
                             {{ row.recordTime }}
@@ -575,10 +616,10 @@ new Vue({
                 </template>
             </vxe-column>
 
-            <!-- 联系人 -->
+            <!-- 联系人 - 添加 whitespace-normal -->
             <vxe-column title="联系人" width="100" align="center">
                 <template #default="{ row }">
-                    <div class="grid grid-cols-2 gap-1">
+                    <div class="grid grid-cols-2 gap-1 whitespace-normal">
                         <span class="cursor-pointer hover:text-blue-600 bg-slate-50 border border-slate-200 rounded px-1 text-[10px]" @click="openChat('客服', row)">客服</span>
                         <span class="cursor-pointer hover:text-blue-600 bg-slate-50 border border-slate-200 rounded px-1 text-[10px]" @click="openChat('运营', row)">运营</span>
                         <span class="cursor-pointer hover:text-blue-600 bg-slate-50 border border-slate-200 rounded px-1 text-[10px]" @click="openChat('售后', row)">售后</span>
@@ -625,16 +666,17 @@ new Vue({
          </vxe-table>
          
          <!-- Footer / Pagination -->
-         <div class="bg-white px-4 py-2 border-t border-gray-200 flex justify-between items-center shrink-0">
-            <span class="text-xs text-slate-500">共 <span class="font-mono font-bold">{{ page.total }}</span> 条数据</span>
-            <vxe-pager
+         <div class="bg-white px-4 py-2 border-t border-gray-200 flex justify-end items-center shrink-0">
+            <el-pagination
+                background
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
                 :current-page="page.currentPage"
+                :page-sizes="[20, 50, 100]"
                 :page-size="page.pageSize"
-                :total="page.total"
-                :layouts="['PrevPage', 'Number', 'NextPage', 'Sizes', 'FullJump']"
-                size="mini"
-                @page-change="handlePageChange">
-            </vxe-pager>
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="page.total">
+            </el-pagination>
          </div>
       </div>
 
