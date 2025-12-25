@@ -474,199 +474,200 @@ new Vue({
 
       <!-- 3. Table Area (表格区域) -->
       <div class="bg-white rounded-lg shadow-sm border border-gray-300 flex-1 flex flex-col overflow-hidden mt-2">
-         <vxe-table
-            border
-            stripe
-            show-header-overflow
-            :row-config="{isHover: true}"
-            :data="displayData"
-            :loading="loading"
-            height="auto"
-            class="flex-1"
-            size="mini"
-            :scroll-y="{enabled: false}"
-          >
-            <!-- 手机号 -->
-            <vxe-column field="mobile" title="手机号" width="105" fixed="left" align="center">
-                <template #default="{ row, rowIndex }">
-                   <span class="font-mono font-bold text-slate-800 text-[12px]">{{ row.mobile }}</span>
-                </template>
-            </vxe-column>
+         <div class="flex-1 overflow-hidden relative">
+            <vxe-table
+                border
+                stripe
+                show-header-overflow
+                :row-config="{isHover: true}"
+                :data="displayData"
+                :loading="loading"
+                height="100%"
+                class="absolute inset-0" 
+                size="mini"
+            >
+                <!-- 手机号 -->
+                <vxe-column field="mobile" title="手机号" width="105" fixed="left" align="center">
+                    <template #default="{ row, rowIndex }">
+                    <span class="font-mono font-bold text-slate-800 text-[12px]">{{ row.mobile }}</span>
+                    </template>
+                </vxe-column>
 
-            <!-- 项目/质保期 - 居中对齐，添加 whitespace-normal 确保换行 -->
-            <vxe-column field="serviceItem" title="项目/质保期" width="120" align="center">
-                <template #default="{ row }">
-                   <div class="flex flex-col items-center whitespace-normal break-words">
-                      <span class="font-bold text-gray-700 hover:text-blue-600 cursor-pointer text-[12px]">{{ row.serviceItem }}</span>
-                      <span class="text-[10px] text-slate-500">{{ row.warranty }}</span>
-                   </div>
-                </template>
-            </vxe-column>
-
-            <!-- 状态 -->
-            <vxe-column field="status" title="状态" width="80" align="center">
-                <template #default="{ row }">
-                   <div class="flex flex-col items-center">
-                     <el-tag :type="getStatusType(row.status)" size="mini" effect="light" class="!h-5 !px-1 !line-height-18">{{ row.status }}</el-tag>
-                     <span v-if="row.returnReason" class="text-[9px] text-red-500 scale-90">{{ row.returnReason }}</span>
-                     <span v-if="row.errorDetail" class="text-[9px] text-yellow-600 scale-90">{{ row.errorDetail }}</span>
-                   </div>
-                </template>
-            </vxe-column>
-
-            <!-- 系数 -->
-            <vxe-column field="weightedCoefficient" title="系数" width="60" align="center">
-                <template #default="{ row }">
-                    <span class="font-mono font-medium">{{ row.weightedCoefficient.toFixed(1) }}</span>
-                </template>
-            </vxe-column>
-
-            <!-- 地域 - 添加 whitespace-normal -->
-            <vxe-column field="region" title="地域" width="130">
-                <template #default="{ row }">
-                    <div class="whitespace-normal break-words">{{ row.region }}</div>
-                    <div class="text-[9px] text-blue-500"><span class="font-mono">{{ row.regionPeople }}</span>人</div>
-                </template>
-            </vxe-column>
-
-            <!-- 地址 - 颜色text-slate-800，完全显示 -->
-            <vxe-column field="address" title="详细地址" min-width="180">
-                <template #default="{ row }">
-                   <span class="text-slate-800 text-[12px] leading-tight whitespace-normal break-words" :title="row.address">{{ row.address }}</span>
-                </template>
-            </vxe-column>
-
-            <!-- 详情 - 颜色text-slate-800，完全显示 -->
-            <vxe-column field="details" title="详情" min-width="220">
-                <template #default="{ row }">
-                   <span class="text-slate-800 text-[14px] leading-tight whitespace-normal break-words" :title="row.details">{{ row.details }}</span>
-                </template>
-            </vxe-column>
-
-            <!-- 建议分成 - 颜色text-slate-800，去加粗 -->
-            <vxe-column field="serviceRatio" title="建议分成" width="80" align="center">
-                <template #default="{ row }">
-                    <span class="text-slate-800 text-[16px] font-mono">{{ row.serviceRatio }}</span>
-                </template>
-            </vxe-column>
-
-            <!-- 建议方式 - 颜色text-slate-800 -->
-            <vxe-column field="dispatchMethod" title="建议方式" width="80" align="center">
-                <template #default="{ row }">
-                    <span class="text-slate-800 text-[12px]">{{ row.dispatchMethod }}</span>
-                </template>
-            </vxe-column>
-
-            <!-- 价格列 - 颜色text-slate-800 -->
-            <vxe-column field="marketPrice" title="划线价" width="70" align="center">
-                <template #default="{ row }">
-                    <span class="text-slate-800 font-mono">{{ row.marketPrice }}</span>
-                </template>
-            </vxe-column>
-            <!-- 历史价 -->
-            <vxe-column field="historyPriceLow" title="历史价" width="80" align="center">
-                <template #default="{ row }">
-                    <span class="text-[14px] font-mono">{{ row.historyPriceLow }}-{{ row.historyPriceHigh }}</span>
-                </template>
-            </vxe-column>
-
-            <!-- 来源 -->
-            <vxe-column field="source" title="来源" width="70" align="center">
-                <template #default="{ row }">
-                    <span class="bg-gray-100 px-1 rounded text-slate-500 text-[11px]">{{ row.source }}</span>
-                </template>
-            </vxe-column>
-
-            <!-- 订单号 -->
-            <vxe-column field="orderNo" title="订单/工单号" width="130">
-                <template #default="{ row }">
-                    <div class="flex flex-col">
-                        <div class="flex items-center gap-1">
-                            <span class="font-medium text-slate-900 font-mono text-[11px]">{{ row.orderNo }}</span>
-                            <span v-if="row.hasAdvancePayment" class="bg-rose-500 text-white text-[9px] px-0.5 rounded scale-90">垫</span>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <span class="text-slate-400 font-mono text-[10px]">{{ row.workOrderNo }}</span>
-                            <span v-if="row.depositAmount" class="bg-teal-50 text-teal-700 border border-teal-200 text-[9px] px-0.5 rounded scale-90 font-mono">定{{row.depositAmount}}</span>
-                        </div>
+                <!-- 项目/质保期 - 居中对齐，添加 whitespace-normal 确保换行 -->
+                <vxe-column field="serviceItem" title="项目/质保期" width="120" align="center">
+                    <template #default="{ row }">
+                    <div class="flex flex-col items-center whitespace-normal break-words">
+                        <span class="font-bold text-gray-700 hover:text-blue-600 cursor-pointer text-[12px]">{{ row.serviceItem }}</span>
+                        <span class="text-[10px] text-slate-500">{{ row.warranty }}</span>
                     </div>
-                </template>
-            </vxe-column>
+                    </template>
+                </vxe-column>
 
-            <!-- 时间 - 添加 whitespace-normal -->
-            <vxe-column field="recordTime" title="录单/上门时间" width="140" align="center">
-                <template #default="{ row }">
-                    <div class="flex flex-col gap-0.5 text-[12px] whitespace-normal">
-                        <div class="flex items-center justify-center gap-1 text-slate-400 font-mono">
-                            <span class="w-3.5 h-3.5 rounded bg-blue-500 text-white flex items-center justify-center text-[9px] font-sans">录</span>
-                            {{ row.recordTime }}
-                        </div>
-                        <div class="flex items-center justify-center gap-1 text-blue-600 font-medium font-mono">
-                            <span class="w-3.5 h-3.5 rounded bg-purple-500 text-white flex items-center justify-center text-[9px] font-sans">期</span>
-                            {{ row.expectedTime }}
-                        </div>
+                <!-- 状态 -->
+                <vxe-column field="status" title="状态" width="80" align="center">
+                    <template #default="{ row }">
+                    <div class="flex flex-col items-center">
+                        <el-tag :type="getStatusType(row.status)" size="mini" effect="light" class="!h-5 !px-1 !line-height-18">{{ row.status }}</el-tag>
+                        <span v-if="row.returnReason" class="text-[9px] text-red-500 scale-90">{{ row.returnReason }}</span>
+                        <span v-if="row.errorDetail" class="text-[9px] text-yellow-600 scale-90">{{ row.errorDetail }}</span>
                     </div>
-                </template>
-            </vxe-column>
+                    </template>
+                </vxe-column>
 
-            <!-- 资源 -->
-            <vxe-column title="资源" width="70" align="center">
-                <template #default="{ row }">
-                    <el-button size="mini" plain class="!p-1 !text-[10px]" @click="checkResource(row)">查资源</el-button>
-                </template>
-            </vxe-column>
+                <!-- 系数 -->
+                <vxe-column field="weightedCoefficient" title="系数" width="60" align="center">
+                    <template #default="{ row }">
+                        <span class="font-mono font-medium">{{ row.weightedCoefficient.toFixed(1) }}</span>
+                    </template>
+                </vxe-column>
 
-            <!-- 联系人 - 添加 whitespace-normal -->
-            <vxe-column title="联系人" width="100" align="center">
-                <template #default="{ row }">
-                    <div class="grid grid-cols-2 gap-1 whitespace-normal">
-                        <span class="cursor-pointer hover:text-blue-600 bg-slate-50 border border-slate-200 rounded px-1 text-[10px]" @click="openChat('客服', row)">客服</span>
-                        <span class="cursor-pointer hover:text-blue-600 bg-slate-50 border border-slate-200 rounded px-1 text-[10px]" @click="openChat('运营', row)">运营</span>
-                        <span class="cursor-pointer hover:text-blue-600 bg-slate-50 border border-slate-200 rounded px-1 text-[10px]" @click="openChat('售后', row)">售后</span>
-                        <span class="cursor-pointer hover:text-blue-600 bg-slate-50 border border-slate-200 rounded px-1 text-[10px] flex items-center justify-center" @click="openChat('群聊', row)"><i class="el-icon-chat-line-square"></i></span>
-                    </div>
-                </template>
-            </vxe-column>
+                <!-- 地域 - 添加 whitespace-normal -->
+                <vxe-column field="region" title="地域" width="130">
+                    <template #default="{ row }">
+                        <div class="whitespace-normal break-words">{{ row.region }}</div>
+                        <div class="text-[9px] text-blue-500"><span class="font-mono">{{ row.regionPeople }}</span>人</div>
+                    </template>
+                </vxe-column>
 
-            <!-- 派单 - 优化悬浮标签样式 -->
-            <vxe-column title="派单" width="80" align="center" fixed="right">
-                <template #default="{ row }">
-                    <div v-if="row.status === '待派单'" class="relative inline-block w-full">
-                        <el-popover placement="left" width="120" trigger="click">
-                            <div class="flex flex-col gap-1">
-                                <el-button size="mini" type="text" @click="handleDispatch(row)">线下派单</el-button>
-                                <el-button size="mini" type="text" @click="handleDispatch(row)">线上派单</el-button>
+                <!-- 地址 - 颜色text-slate-800，完全显示 -->
+                <vxe-column field="address" title="详细地址" min-width="180">
+                    <template #default="{ row }">
+                    <span class="text-slate-800 text-[12px] leading-tight whitespace-normal break-words" :title="row.address">{{ row.address }}</span>
+                    </template>
+                </vxe-column>
+
+                <!-- 详情 - 颜色text-slate-800，完全显示 -->
+                <vxe-column field="details" title="详情" min-width="220">
+                    <template #default="{ row }">
+                    <span class="text-slate-800 text-[14px] leading-tight whitespace-normal break-words" :title="row.details">{{ row.details }}</span>
+                    </template>
+                </vxe-column>
+
+                <!-- 建议分成 - 颜色text-slate-800，去加粗 -->
+                <vxe-column field="serviceRatio" title="建议分成" width="80" align="center">
+                    <template #default="{ row }">
+                        <span class="text-slate-800 text-[16px] font-mono">{{ row.serviceRatio }}</span>
+                    </template>
+                </vxe-column>
+
+                <!-- 建议方式 - 颜色text-slate-800 -->
+                <vxe-column field="dispatchMethod" title="建议方式" width="80" align="center">
+                    <template #default="{ row }">
+                        <span class="text-slate-800 text-[12px]">{{ row.dispatchMethod }}</span>
+                    </template>
+                </vxe-column>
+
+                <!-- 价格列 - 颜色text-slate-800 -->
+                <vxe-column field="marketPrice" title="划线价" width="70" align="center">
+                    <template #default="{ row }">
+                        <span class="text-slate-800 font-mono">{{ row.marketPrice }}</span>
+                    </template>
+                </vxe-column>
+                <!-- 历史价 -->
+                <vxe-column field="historyPriceLow" title="历史价" width="80" align="center">
+                    <template #default="{ row }">
+                        <span class="text-[14px] font-mono">{{ row.historyPriceLow }}-{{ row.historyPriceHigh }}</span>
+                    </template>
+                </vxe-column>
+
+                <!-- 来源 -->
+                <vxe-column field="source" title="来源" width="70" align="center">
+                    <template #default="{ row }">
+                        <span class="bg-gray-100 px-1 rounded text-slate-500 text-[11px]">{{ row.source }}</span>
+                    </template>
+                </vxe-column>
+
+                <!-- 订单号 -->
+                <vxe-column field="orderNo" title="订单/工单号" width="130">
+                    <template #default="{ row }">
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-1">
+                                <span class="font-medium text-slate-900 font-mono text-[11px]">{{ row.orderNo }}</span>
+                                <span v-if="row.hasAdvancePayment" class="bg-rose-500 text-white text-[9px] px-0.5 rounded scale-90">垫</span>
                             </div>
-                            <el-button slot="reference" type="warning" size="mini" class="!p-1.5 !text-[11px] w-full">
-                                派单
-                            </el-button>
-                        </el-popover>
-                        <span v-if="row.dispatchStatus !== '正常'" class="absolute -top-2 -right-2 bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-full shadow-sm scale-75 z-20 font-bold whitespace-nowrap animate-float-jump pointer-events-none">{{ row.dispatchStatus }}</span>
-                    </div>
-                    <span v-else class="text-gray-300 text-[10px]">已派单</span>
-                </template>
-            </vxe-column>
+                            <div class="flex items-center gap-1">
+                                <span class="text-slate-400 font-mono text-[10px]">{{ row.workOrderNo }}</span>
+                                <span v-if="row.depositAmount" class="bg-teal-50 text-teal-700 border border-teal-200 text-[9px] px-0.5 rounded scale-90 font-mono">定{{row.depositAmount}}</span>
+                            </div>
+                        </div>
+                    </template>
+                </vxe-column>
 
-            <!-- 操作 -->
-            <vxe-column title="操作" width="80" align="center" fixed="right">
-                <template #default="{ row }">
-                    <el-dropdown trigger="click" size="mini" @command="(cmd) => handleAction(cmd, row)">
-                      <el-button size="mini" class="!px-2 !py-1 text-[11px]">
-                        操作<i class="el-icon-arrow-down el-icon--right"></i>
-                      </el-button>
-                      <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item command="复制" icon="el-icon-document-copy">复制订单</el-dropdown-item>
-                        <el-dropdown-item command="完单" icon="el-icon-check" class="text-green-600">完单</el-dropdown-item>
-                        <el-dropdown-item command="作废" icon="el-icon-delete" class="text-red-500">作废</el-dropdown-item>
-                        <el-dropdown-item command="详情" icon="el-icon-info">详情</el-dropdown-item>
-                      </el-dropdown-menu>
-                    </el-dropdown>
-                </template>
-            </vxe-column>
-         </vxe-table>
+                <!-- 时间 - 添加 whitespace-normal -->
+                <vxe-column field="recordTime" title="录单/上门时间" width="140" align="center">
+                    <template #default="{ row }">
+                        <div class="flex flex-col gap-0.5 text-[12px] whitespace-normal">
+                            <div class="flex items-center justify-center gap-1 text-slate-400 font-mono">
+                                <span class="w-3.5 h-3.5 rounded bg-blue-500 text-white flex items-center justify-center text-[9px] font-sans">录</span>
+                                {{ row.recordTime }}
+                            </div>
+                            <div class="flex items-center justify-center gap-1 text-blue-600 font-medium font-mono">
+                                <span class="w-3.5 h-3.5 rounded bg-purple-500 text-white flex items-center justify-center text-[9px] font-sans">期</span>
+                                {{ row.expectedTime }}
+                            </div>
+                        </div>
+                    </template>
+                </vxe-column>
+
+                <!-- 资源 -->
+                <vxe-column title="资源" width="70" align="center">
+                    <template #default="{ row }">
+                        <el-button size="mini" plain class="!p-1 !text-[10px]" @click="checkResource(row)">查资源</el-button>
+                    </template>
+                </vxe-column>
+
+                <!-- 联系人 - 添加 whitespace-normal -->
+                <vxe-column title="联系人" width="100" align="center">
+                    <template #default="{ row }">
+                        <div class="grid grid-cols-2 gap-1 whitespace-normal">
+                            <span class="cursor-pointer hover:text-blue-600 bg-slate-50 border border-slate-200 rounded px-1 text-[10px]" @click="openChat('客服', row)">客服</span>
+                            <span class="cursor-pointer hover:text-blue-600 bg-slate-50 border border-slate-200 rounded px-1 text-[10px]" @click="openChat('运营', row)">运营</span>
+                            <span class="cursor-pointer hover:text-blue-600 bg-slate-50 border border-slate-200 rounded px-1 text-[10px]" @click="openChat('售后', row)">售后</span>
+                            <span class="cursor-pointer hover:text-blue-600 bg-slate-50 border border-slate-200 rounded px-1 text-[10px] flex items-center justify-center" @click="openChat('群聊', row)"><i class="el-icon-chat-line-square"></i></span>
+                        </div>
+                    </template>
+                </vxe-column>
+
+                <!-- 派单 - 优化悬浮标签样式 -->
+                <vxe-column title="派单" width="80" align="center" fixed="right">
+                    <template #default="{ row }">
+                        <div v-if="row.status === '待派单'" class="relative inline-block w-full">
+                            <el-popover placement="left" width="120" trigger="click">
+                                <div class="flex flex-col gap-1">
+                                    <el-button size="mini" type="text" @click="handleDispatch(row)">线下派单</el-button>
+                                    <el-button size="mini" type="text" @click="handleDispatch(row)">线上派单</el-button>
+                                </div>
+                                <el-button slot="reference" type="warning" size="mini" class="!p-1.5 !text-[11px] w-full">
+                                    派单
+                                </el-button>
+                            </el-popover>
+                            <span v-if="row.dispatchStatus !== '正常'" class="absolute -top-2 -right-2 bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-full shadow-sm scale-75 z-20 font-bold whitespace-nowrap animate-float-jump pointer-events-none">{{ row.dispatchStatus }}</span>
+                        </div>
+                        <span v-else class="text-gray-300 text-[10px]">已派单</span>
+                    </template>
+                </vxe-column>
+
+                <!-- 操作 -->
+                <vxe-column title="操作" width="80" align="center" fixed="right">
+                    <template #default="{ row }">
+                        <el-dropdown trigger="click" size="mini" @command="(cmd) => handleAction(cmd, row)">
+                        <el-button size="mini" class="!px-2 !py-1 text-[11px]">
+                            操作<i class="el-icon-arrow-down el-icon--right"></i>
+                        </el-button>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item command="复制" icon="el-icon-document-copy">复制订单</el-dropdown-item>
+                            <el-dropdown-item command="完单" icon="el-icon-check" class="text-green-600">完单</el-dropdown-item>
+                            <el-dropdown-item command="作废" icon="el-icon-delete" class="text-red-500">作废</el-dropdown-item>
+                            <el-dropdown-item command="详情" icon="el-icon-info">详情</el-dropdown-item>
+                        </el-dropdown-menu>
+                        </el-dropdown>
+                    </template>
+                </vxe-column>
+            </vxe-table>
+         </div>
          
          <!-- Footer / Pagination -->
-         <div class="bg-white px-4 py-2 border-t border-gray-200 flex justify-end items-center shrink-0">
+         <div class="bg-white px-4 py-2 border-t border-gray-200 flex justify-center items-center shrink-0 z-10">
             <el-pagination
                 background
                 @size-change="handleSizeChange"
@@ -715,4 +716,3 @@ new Vue({
 
     </div>
   `
-});
